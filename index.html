@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="HandheldFriendly" content="true">
+	<title></title>
+	<link rel="stylesheet" href="css/common.css">
+</head>
+<body>
+	<div id="app" v-cloak>
+		<div class="top">
+			<div class="topl"></div>
+			<div class="topm">MarketName</div>
+			<div class="topr"></div>
+		</div>
+		<div class="wrap">
+			<div class="wrapl">
+				<ul>
+					<li v-for="(sort,index) in sorts" @click="srotAct(index)" :class="{actvie:index==sortIndex}">{{sort.tit}}</li>
+				</ul>
+			</div>
+			<div class="wrapr">
+				<ul>
+					<li v-for="(good,index) in goods">
+						<a href="good_detail.html" @click="goodStore(good)">
+							<div class="img" :style="{backgroundImage: 'url(' + good.pic + ')'}"></div>
+							<div class="info">
+								<h2>{{good.tit}}</h2>
+								<big>￥{{good.price}}</big>
+							</div>
+						</a>
+						<div class="quantity">
+							<i class="iconfont icon-move" v-if="good.quantity" @click="contQuantity(-1,index)"></i>
+							<p v-if="good.quantity">{{good.quantity}}</p>
+							<i class="iconfont icon-add" @click="contQuantity(1,index)"></i>
+						</div>
+					</li>
+					<infinite-loading  :on-infinite="onInfinite" ref="infiniteLoading">
+		                <span slot="no-results">再看看其他品类吧</span>
+		                <span slot="no-more">已经到末尾</span>
+		            </infinite-loading>
+				</ul>
+			</div>
+		</div>
+		<div class="foot">
+			<a class="footl" href="cart.html" @click="cartStore()">
+				<div class="num" v-if="sumCart>0">{{sumCart}}</div>
+				<h1>ShopCart</h1>
+			</a>
+			<div class="footr" v-if="0"></div>
+		</div>
+	</div>
+</body>
+</html>
+<script src="js/vue.js"></script>
+<script src="js/axios.min.js"></script>
+<script src="js/vue-infinite-loading.js"></script>
+<script src="js/lodash.js"></script>
+<script src="js/store.everything.min.js"></script>
+<script src="js/public.js"></script>
+<script type="text/javascript">
+	new Vue ({
+		mixins:[mixin],
+		el:"#app",
+		data:{
+			sorts:[],
+			goods:[],
+			cart:[],
+			sortIndex: 0,
+			page: 0
+		},
+		watch:{
+			sortIndex:function (val,oldVal) {
+				this.goodsView(); //载入分类商品
+				setTimeout(function () {
+	              this.quantityView();  
+	            }.bind(this), 1000 );  //延时同步购物车商品数量
+				setTimeout(function () {
+					this.page = 0;
+	            	this.$refs.infiniteLoading.$emit('$InfiniteLoading:reset'); 
+	            }.bind(this), 500 ); //延时刷新下拉加载插件
+			}
+		},
+		computed: {
+            sumCart: function(){
+              var sum = _.sumBy(this.cart, function(item) { return item.quantity; });
+              return sum;
+            },  //购物车计数
+        },
+		methods:{
+			sortView:function () {
+				var _this = this;
+				axios.get("/sl").then(function(res){
+					_this.sorts = res.data.sorts;
+				})
+			},  //加载商品分类
+
+			goodsView:function () {
+				var _this = this;
+				axios.get("/s" + _this.sortIndex).then(function(res){
+					_this.goods = res.data.goods;
+				})
+			},  //加载商品列表
+
+			quantityView:function () {
+				var _this = this;
+	            _.forEach(_this.goods, function(good, key) {
+	                var bingo = _.find(_this.cart, function(item) { return item.goods_id == good.goods_id; });
+	                if(bingo){
+	                    Vue.set(good,"quantity",bingo.quantity);
+	                }else{
+	                    Vue.set(good,"quantity",0);
+	                }
+	            });  //与购物车同步商品数量
+			},
+
+			srotAct:function (index) {
+				this.sortIndex = index; //切换商品分类
+			},
+
+			onInfinite:function () {
+				var _this = this;
+                setTimeout(function() {
+                    axios.get("/s" + _this.sortIndex + "_a" + _this.page).then(function (e) {
+                        if(e.data.flag_end == "0"){
+	                        _this.goods = _this.goods.concat(e.data.goods);
+	                        // 继续载入
+	                        _this.$refs.infiniteLoading.$emit('$InfiniteLoading:loaded');
+	                        _this.page ++;
+                        }else{
+                            // 结束载入
+                            _this.$refs.infiniteLoading.$emit('$InfiniteLoading:complete');
+                        }
+                    });
+                    setTimeout(function () {
+		              this.quantityView();  
+		            }.bind(this), 1000 ); //防止页面载入完成前同步数量导致同步失败
+                }.bind(this), 800);  //页面载入延时
+            },
+
+            contQuantity:function (flag,index) {
+            	var _this = this;
+            	var flag_bingo = false; //购物车中是否已存在该商品
+            	if(flag == 1){
+            		_.find(_this.cart, function(item) {
+	            		if(item.goods_id == _this.goods[index].goods_id){
+	            			_this.goods[index].quantity ++;
+	            			item.quantity = _this.goods[index].quantity;
+	            			flag_bingo = true;
+	            		}; //购物车中有商品则增加商品数量
+	            	});
+	            	if(flag_bingo == false){
+	            		_this.goods[index].quantity = 1 ;
+	            		_this.cart = _this.cart.concat(_this.goods[index]);
+	            	};  //购物车中没有商品则放入商品
+            	}else if(_this.goods[index].quantity > 0){
+            		_.find(_this.cart, function(item) {
+	            		if(item.goods_id == _this.goods[index].goods_id){
+	            			_this.goods[index].quantity --;
+	            			item.quantity = _this.goods[index].quantity;
+	            		};
+	            	}); 
+            	};  //商品数量不为零则减少商品数量
+            }
+		},
+		mounted:function () {
+			this.sortView();
+			this.goodsView();
+			this.cartView();
+
+			setTimeout(function () {
+              this.quantityView();  
+            }.bind(this), 1000 );
+		},
+	})
+</script>

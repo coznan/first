@@ -1,0 +1,8 @@
+{
+	"cart":[
+		{"goods_id":1,"tit":"特价商品2","price":11.55,"quantity":5,"checked":false,"pic":"img/good1.jpg"},
+		{"goods_id":102,"tit":"香蕉","price":13.12,"quantity":2,"checked":false,"pic":"img/good1.jpg"},
+		{"goods_id":200,"tit":"大白菜","price":2.75,"quantity":3,"checked":false,"pic":"img/good1.jpg"},
+		{"goods_id":301,"tit":"瓜子","price":22.85,"quantity":1,"checked":false,"pic":"img/good1.jpg"}
+	]
+}

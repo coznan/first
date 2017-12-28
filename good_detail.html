@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="HandheldFriendly" content="true">
+	<title></title>
+	<link rel="stylesheet" href="css/common.css">
+</head>
+<body>
+	<div id="app" v-cloak>
+		<div class="top">
+			<div class="topl">
+				<a href="main.html" @click="cartStore()">
+					<i class="iconfont icon-back"></i>Back
+				</a>
+			</div>
+			<div class="topm">MarketName</div>
+			<div class="topr"></div>
+		</div>
+		<div class="wrap">
+			<div class="wrapl" v-if="0">
+				
+			</div>
+			<div class="wrapr">
+				<div class="img" :style="{backgroundImage: 'url(' + good.pic + ')'}"></div>
+				<div class="info_cont">
+					<h1>{{good.tit}}</h1>
+					<div class="price_bar">
+						<p>￥{{good.price}}</p>
+						<div class="quantity">
+							<i class="iconfont icon-move" v-if="good.quantity" @click="contQuantity(-1,good.goods_id)"></i>
+							<p v-if="good.quantity">{{good.quantity}}</p>
+							<i class="iconfont icon-add" @click="contQuantity(1,good.goods_id)"></i>
+						</div>
+					</div>
+					<div class="comment"><p>商品评价</p><p>...</p></div>
+					<div class="more"><p>也许你还喜欢</p><p>...</p></div>
+				</div>
+			</div>
+		</div>
+		<div class="foot">
+			<a class="footl" @click="cartStore()" href="cart.html">
+				<div class="num" v-if="sumCart>0">{{sumCart}}</div>
+				<h1>ShopCart</h1>
+			</a>
+			<div class="footr" v-if="0"></div>
+		</div>
+	</div>
+</body>
+</html>
+<script src="js/vue.js"></script>
+<script src="js/axios.min.js"></script>
+<script src="js/vue-infinite-loading.js"></script>
+<script src="js/lodash.js"></script>
+<script src="js/store.everything.min.js"></script>
+<script src="js/public.js"></script>
+<script type="text/javascript">
+	new Vue ({
+		mixins:[mixin],
+		el:"#app",
+		data:{
+
+		},
+		watch:{
+			
+		},
+		computed: {
+            sumCart: function(){
+              var sum = _.sumBy(this.cart, function(item) { return item.quantity; });
+              return sum;
+            },  //购物车计数
+        },
+		methods:{
+            contQuantity:function (flag,goods_id) {
+            	var _this = this;
+            	var flag_bingo = false;  //购物车中是否已存在该商品
+	            if(flag == 1){
+            		_.find(_this.cart, function(item) {
+	            		if(item.goods_id == goods_id){
+	            			_this.good.quantity ++;
+	            			item.quantity = _this.good.quantity;
+	            			flag_bingo = true;
+	            		};  //购物车中有商品则增加商品数量
+	            	});
+	            	if(flag_bingo == false){
+	            		_this.good.quantity = 1;
+	            		_this.cart = _this.cart.concat(_this.good);
+	            	};  //购物车中没有商品则放入商品
+            	}else if(_this.good.quantity > 0){
+            		_.find(_this.cart, function(item) {
+	            		if(item.goods_id == goods_id){
+	            			_this.good.quantity --;
+	            			item.quantity = _this.good.quantity;
+	            		};
+	            	});
+            	};  //商品数量不为零则减少商品数量
+            },
+		},
+		mounted:function () {
+			this.goodView();
+			this.cartView();
+		},
+	})
+</script>

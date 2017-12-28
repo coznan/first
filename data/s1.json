@@ -1,0 +1,11 @@
+{
+	"goods":[
+		{"checked":false,"goods_id":100,"tit":"苹果","price":7.87,"pic":"img/good1.jpg"},
+		{"checked":false,"goods_id":101,"tit":"梨","price":11.81,"pic":"img/good1.jpg"},
+		{"checked":false,"goods_id":102,"tit":"香蕉","price":13.12,"pic":"img/good1.jpg"},
+		{"checked":false,"goods_id":103,"tit":"桔子","price":13.35,"pic":"img/good1.jpg"},
+		{"checked":false,"goods_id":104,"tit":"火龙果","price":4.02,"pic":"img/good1.jpg"},
+		{"checked":false,"goods_id":105,"tit":"芒果","price":7.07,"pic":"img/good1.jpg"},
+		{"checked":false,"goods_id":106,"tit":"柚子","price":7.48,"pic":"img/good1.jpg"}
+	]
+}

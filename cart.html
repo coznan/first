@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="HandheldFriendly" content="true">
+	<title></title>
+	<link rel="stylesheet" href="css/common.css">
+</head>
+<body>
+	<div id="app" v-cloak>
+		<div class="top">
+			<div class="topl">
+				<a href="main.html" @click="cartStore()">
+					<i class="iconfont icon-back"></i>Back
+				</a>
+			</div>
+			<div class="topm">MarketName</div>
+			<div class="topr"></div>
+		</div>
+		<div class="wrap">
+			<div class="wrapl" v-if="0">
+				
+			</div>
+			<div class="wrapr">
+				<ul>
+					<li v-for="(item,index) in cart">
+						<i class="check_box" :class="{check_box_a:item.checked}" href="#" title=""  @click="checkItem(index)"></i>
+						<a href="good_detail.html" @click="goodStore(item)">
+							<div class="img" :style="{backgroundImage: 'url(' + item.pic + ')'}"></div>
+							<div class="info">
+								<h2>{{item.tit}}</h2>
+								<big>￥{{item.price}}</big>
+							</div>
+						</a>
+						<div class="quantity">
+							<i class="iconfont icon-move" v-if="item.quantity" @click="countQuantity(-1,index)"></i>
+							<p v-if="item.quantity">{{item.quantity}}</p>
+							<i class="iconfont icon-add" @click="countQuantity(1,index)"></i>
+						</div>
+					</li>
+				</ul>
+			</div>
+		</div>
+		<div class="foot">
+			<div class="footl">
+				<div class="pay_bar">
+					<div class="a_check" v-if="cart[0]">
+						<i class="check_box" :class="{check_box_a:CA_falg}" title="" @click="checkAll()"></i>
+						<p>ALL</p>
+					</div>
+					<p class="t_price">Total：<span>{{totalPrice | formatMoney}}</span></p>
+					<a class="pay_btn" :class="{pay_btn_g:totalPrice==0}" href="#" title="" @click="postPay()">Pay</a>
+				</div>
+			</div>
+			<div class="footr" v-if="0"></div>
+		</div>
+	</div>
+</body>
+</html>
+<script src="js/vue.js"></script>
+<script src="js/axios.min.js"></script>
+<script src="js/vue-infinite-loading.js"></script>
+<script src="js/lodash.js"></script>
+<script src="js/store.everything.min.js"></script>
+<script src="js/public.js"></script>
+<script type="text/javascript">
+	new Vue ({
+		mixins: [mixin],
+		el:"#app",
+		data:{
+			CA_falg: false
+		},
+		watch:{
+
+		},
+		computed: {
+            totalPrice: function(){
+              var sum = _.sumBy(this.cart, function(item)
+              	{if(item.checked == true){
+              		return item.quantity*item.price;
+		        }else{
+		        	return 0;
+		        }; 
+              });
+              	return sum;
+            },  //计算总价
+        },
+		methods:{
+			countQuantity:function (flag,index) {
+				if(flag == 1){
+					this.cart[index].quantity ++;
+				}else if(this.cart[index].quantity > 1){
+					this.cart[index].quantity --;
+				};
+			},  //增减商品数量
+
+			checkItem:function (index) {
+				this.cart[index].checked = !this.cart[index].checked;
+				var _this = this;
+				var b_item = _.find(_this.cart, function(c_item) { return c_item.checked == false});
+                if (b_item) {
+                	return _this.CA_falg = false;
+                }else{
+                	return _this.CA_falg = true;
+                };
+			},  //勾选商品并判断是否全选
+
+			checkAll:function () {
+				this.CA_falg = !this.CA_falg;
+				var _this = this;
+				if (this.CA_falg == true) {
+		            _.forEach(_this.cart, function(item, key) {
+		                item.checked = true;
+		            });
+				}else{
+					_.forEach(_this.cart, function(item, key) {
+		                item.checked = false;
+		            });
+				}
+			},  //全选和清除全选
+
+            postPay:function () {
+            	var _this = this;
+            	var pay = [];
+	        	_.forEach(_this.cart, function(item, key){
+		                if(item.checked == true){
+		                	pay.push(item);
+		                };
+		            }); //清除数量为零的商品
+            	axios.post("/py",pay,{emulateJSON: true}).then(function (res) {
+            		console.log(res);
+            			if (res.statusText == 'OK') {
+            				_.forEach(pay, function(good, key) {
+            					var b_item = _.find(_this.cart, function(item) { return item.goods_id == good.goods_id; });
+            					var b_index = _this.cart.indexOf(b_item);
+            					_this.cart.splice(b_index,1);
+            				});
+            			};
+		            });
+            }  //商品结算并在收到成功返回后，从购物车中删除结算商品
+		},
+		mounted:function () {
+			this.cartView();
+		}
+	})
+</script>

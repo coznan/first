@@ -1,0 +1,10 @@
+{
+	"goods":[
+		{"checked":false,"goods_id":200,"tit":"大白菜","price":2.75,"pic":"img/good1.jpg"},
+		{"checked":false,"goods_id":201,"tit":"胡萝卜","price":3.16,"pic":"img/good1.jpg"},
+		{"checked":false,"goods_id":202,"tit":"西红柿","price":1.62,"pic":"img/good1.jpg"},
+		{"checked":false,"goods_id":203,"tit":"土豆","price":4.38,"pic":"img/good1.jpg"},
+		{"checked":false,"goods_id":204,"tit":"油麦菜","price":3.66,"pic":"img/good1.jpg"},
+		{"checked":false,"goods_id":205,"tit":"上海青","price":4.77,"pic":"img/good1.jpg"}
+	]
+}

@@ -1,0 +1,11 @@
+{
+	"goods":[
+		{"checked":false,"goods_id":300,"tit":"麻花","price":17.72,"pic":"img/good1.jpg"},
+		{"checked":false,"goods_id":301,"tit":"瓜子","price":22.85,"pic":"img/good1.jpg"},
+		{"checked":false,"goods_id":302,"tit":"花生","price":17.25,"pic":"img/good1.jpg"},
+		{"checked":false,"goods_id":303,"tit":"饼干","price":8.11,"pic":"img/good1.jpg"},
+		{"checked":false,"goods_id":304,"tit":"薯片","price":6.39,"pic":"img/good1.jpg"},
+		{"checked":false,"goods_id":305,"tit":"泡芙","price":20.39,"pic":"img/good1.jpg"},
+		{"checked":false,"goods_id":306,"tit":"蛋糕","price":21.14,"pic":"img/good1.jpg"}
+	]
+}

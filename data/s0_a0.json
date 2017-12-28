@@ -1,0 +1,12 @@
+{
+	"flag_end":0,
+	"goods":[
+		{"checked":false,"goods_id":108,"tit":"特价商品8","price":11.32,"pic":"img/good1.jpg"},
+		{"checked":false,"goods_id":109,"tit":"特价商品9","price":11.55,"pic":"img/good1.jpg"},
+		{"checked":false,"goods_id":110,"tit":"特价商品10","price":22.76,"pic":"img/good1.jpg"},
+		{"checked":false,"goods_id":111,"tit":"特价商品11","price":17.14,"pic":"img/good1.jpg"},
+		{"checked":false,"goods_id":112,"tit":"特价商品12","price":25.28,"pic":"img/good1.jpg"},
+		{"checked":false,"goods_id":113,"tit":"特价商品13","price":14.55,"pic":"img/good1.jpg"},
+		{"checked":false,"goods_id":114,"tit":"特价商品14","price":13.87,"pic":"img/good1.jpg"}
+	]
+}
