@@ -1,4 +1,4 @@
- 
+
 /*axios.defaults.baseURL = 'data'; //请求本地数据
 
 axios.interceptors.request.use(function (config) {
@@ -9,7 +9,7 @@ axios.interceptors.request.use(function (config) {
 	return config;
 });  //拦截器将对本地数据目录的请求加上后缀*/
 
-axios.defaults.baseURL = 'http://www.easy-mock.com/mock/5a0f949137da1d5b8800bdbb/mkt'; //请求easy-mock数据
+axios.defaults.baseURL = 'https://www.easy-mock.com/mock/5a0f949137da1d5b8800bdbb/mkt'; //请求easy-mock数据
 
 var mixin = {
  	data:{
